@@ -35,8 +35,24 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/screen.o
+	${OBJECTDIR}/src/crt0.o \
+	${OBJECTDIR}/src/ctx_sw.o \
+	${OBJECTDIR}/src/debugger.o \
+	${OBJECTDIR}/src/div64.o \
+	${OBJECTDIR}/src/doprnt.o \
+	${OBJECTDIR}/src/empty.o \
+	${OBJECTDIR}/src/handlers.o \
+	${OBJECTDIR}/src/main.o \
+	${OBJECTDIR}/src/panic.o \
+	${OBJECTDIR}/src/printf.o \
+	${OBJECTDIR}/src/processor_structs.o \
+	${OBJECTDIR}/src/screen.o \
+	${OBJECTDIR}/src/sprintf.o \
+	${OBJECTDIR}/src/start.o \
+	${OBJECTDIR}/src/string.o \
+	${OBJECTDIR}/src/strtol.o \
+	${OBJECTDIR}/src/strtoul.o \
+	${OBJECTDIR}/src/traitants.o
 
 
 # C Compiler Flags
@@ -57,21 +73,97 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tp_systemes
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/system
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tp_systemes: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/system: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tp_systemes ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/system ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/main.o: main.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+${OBJECTDIR}/src/crt0.o: src/crt0.S 
+	${MKDIR} -p ${OBJECTDIR}/src
+	$(AS) $(ASFLAGS) -g -o ${OBJECTDIR}/src/crt0.o src/crt0.S
 
-${OBJECTDIR}/screen.o: screen.c 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/ctx_sw.o: src/ctx_sw.S 
+	${MKDIR} -p ${OBJECTDIR}/src
+	$(AS) $(ASFLAGS) -g -o ${OBJECTDIR}/src/ctx_sw.o src/ctx_sw.S
+
+${OBJECTDIR}/src/debugger.o: src/debugger.c 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/screen.o screen.c
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/debugger.o src/debugger.c
+
+${OBJECTDIR}/src/div64.o: src/div64.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/div64.o src/div64.c
+
+${OBJECTDIR}/src/doprnt.o: src/doprnt.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/doprnt.o src/doprnt.c
+
+${OBJECTDIR}/src/empty.o: src/empty.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/empty.o src/empty.c
+
+${OBJECTDIR}/src/handlers.o: src/handlers.S 
+	${MKDIR} -p ${OBJECTDIR}/src
+	$(AS) $(ASFLAGS) -g -o ${OBJECTDIR}/src/handlers.o src/handlers.S
+
+${OBJECTDIR}/src/main.o: src/main.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.c
+
+${OBJECTDIR}/src/panic.o: src/panic.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/panic.o src/panic.c
+
+${OBJECTDIR}/src/printf.o: src/printf.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/printf.o src/printf.c
+
+${OBJECTDIR}/src/processor_structs.o: src/processor_structs.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/processor_structs.o src/processor_structs.c
+
+${OBJECTDIR}/src/screen.o: src/screen.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/screen.o src/screen.c
+
+${OBJECTDIR}/src/sprintf.o: src/sprintf.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/sprintf.o src/sprintf.c
+
+${OBJECTDIR}/src/start.o: src/start.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/start.o src/start.c
+
+${OBJECTDIR}/src/string.o: src/string.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/string.o src/string.c
+
+${OBJECTDIR}/src/strtol.o: src/strtol.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/strtol.o src/strtol.c
+
+${OBJECTDIR}/src/strtoul.o: src/strtoul.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/strtoul.o src/strtoul.c
+
+${OBJECTDIR}/src/traitants.o: src/traitants.S 
+	${MKDIR} -p ${OBJECTDIR}/src
+	$(AS) $(ASFLAGS) -g -o ${OBJECTDIR}/src/traitants.o src/traitants.S
 
 # Subprojects
 .build-subprojects:
@@ -79,7 +171,7 @@ ${OBJECTDIR}/screen.o: screen.c
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tp_systemes
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/system
 
 # Subprojects
 .clean-subprojects:

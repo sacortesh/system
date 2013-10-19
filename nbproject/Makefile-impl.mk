@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=TP_Systemes
+PROJECTNAME=system
 
 # Active Configuration
 DEFAULTCONF=Debug

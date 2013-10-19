@@ -12,8 +12,48 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>main.c</itemPath>
-      <itemPath>screen.c</itemPath>
+      <logicalFolder name="src" displayName="src" projectFiles="true">
+        <itemPath>src/Makefile</itemPath>
+        <itemPath>src/boot.pxe</itemPath>
+        <itemPath>src/console.h</itemPath>
+        <itemPath>src/cpu.h</itemPath>
+        <itemPath>src/crt0.S</itemPath>
+        <itemPath>src/ctx_sw.S</itemPath>
+        <itemPath>src/ctype.h</itemPath>
+        <itemPath>src/debug.h</itemPath>
+        <itemPath>src/debugger.c</itemPath>
+        <itemPath>src/div64.c</itemPath>
+        <itemPath>src/div64.h</itemPath>
+        <itemPath>src/doprnt.c</itemPath>
+        <itemPath>src/doprnt.h</itemPath>
+        <itemPath>src/empty.c</itemPath>
+        <itemPath>src/handlers.S</itemPath>
+        <itemPath>src/kernel.lds</itemPath>
+        <itemPath>src/main.c</itemPath>
+        <itemPath>src/malloc.c.h</itemPath>
+        <itemPath>src/panic.c</itemPath>
+        <itemPath>src/printf.c</itemPath>
+        <itemPath>src/processor_structs.c</itemPath>
+        <itemPath>src/processor_structs.h</itemPath>
+        <itemPath>src/screen.c</itemPath>
+        <itemPath>src/segment.h</itemPath>
+        <itemPath>src/sprintf.c</itemPath>
+        <itemPath>src/start.c</itemPath>
+        <itemPath>src/start.h</itemPath>
+        <itemPath>src/stdarg.h</itemPath>
+        <itemPath>src/stdbool.h</itemPath>
+        <itemPath>src/stddef.h</itemPath>
+        <itemPath>src/stdint.h</itemPath>
+        <itemPath>src/stdio.h</itemPath>
+        <itemPath>src/stdlib.h</itemPath>
+        <itemPath>src/string.c</itemPath>
+        <itemPath>src/string.h</itemPath>
+        <itemPath>src/strtol.c</itemPath>
+        <itemPath>src/strtoul.c</itemPath>
+        <itemPath>src/task_dump_screen.txt</itemPath>
+        <itemPath>src/traitants.S</itemPath>
+        <itemPath>src/types.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -27,6 +67,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>src</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -36,9 +79,85 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="main.c" ex="false" tool="0" flavor2="0">
+      <item path="src/Makefile" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="screen.c" ex="false" tool="0" flavor2="0">
+      <item path="src/boot.pxe" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/console.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/cpu.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/crt0.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/ctx_sw.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/ctype.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/debug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/debugger.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/div64.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/div64.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/doprnt.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/doprnt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/empty.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/handlers.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/kernel.lds" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/malloc.c.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/panic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/printf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/processor_structs.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/processor_structs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/screen.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/segment.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/sprintf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/start.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/start.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdarg.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdbool.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stddef.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/string.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/string.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/strtol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/strtoul.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/task_dump_screen.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/traitants.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/types.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -60,9 +179,85 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="main.c" ex="false" tool="0" flavor2="0">
+      <item path="src/Makefile" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="screen.c" ex="false" tool="0" flavor2="0">
+      <item path="src/boot.pxe" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/console.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/cpu.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/crt0.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/ctx_sw.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/ctype.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/debug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/debugger.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/div64.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/div64.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/doprnt.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/doprnt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/empty.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/handlers.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/kernel.lds" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/malloc.c.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/panic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/printf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/processor_structs.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/processor_structs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/screen.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/segment.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/sprintf.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/start.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/start.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdarg.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdbool.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stddef.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/stdlib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/string.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/string.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/strtol.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/strtoul.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/task_dump_screen.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/traitants.S" ex="false" tool="4" flavor2="0">
+      </item>
+      <item path="src/types.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
