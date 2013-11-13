@@ -21,7 +21,7 @@ int cur_lig_pos = 0;
 int cur_col_pos = 0;
 
 unsigned short *ptr_mem(unsigned lig, unsigned col) {
-    return (unsigned short *) 0xB8000 + (2 * ((lig * NUM_COL) + col));
+    return (unsigned short *) (0xB8000 + 2 * (lig * NUM_COL + col));
 
 }
 
@@ -32,10 +32,10 @@ void defilement(void) {
 }
 
 void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond) {
-
+    //ct
     unsigned short * ptr = ptr_mem(lig, col);
     //1 llamar a metodo que me dqrq la direccion donde guqrdar el caracter
-    *ptr = c | (0 << 15) | (fond << 12);
+    *ptr = c | (0 << 15) | (fond << 12) | (color << 8);
 
 }
 
@@ -147,7 +147,6 @@ void traite_car(unsigned char c) {
 
 
 }
-
 
 
 void console_putbytes(const char *chaine, int taille) {

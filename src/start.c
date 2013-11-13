@@ -22,8 +22,9 @@ void kernel_start(void) {
     (void)x;
     // on ne doit jamais sortir de kernel_start
 
+
+    printf("Hola... es hora de probar si esto funciona bien. ");
 /*
-    printf("Hola... es hora de probar si esto funciona bien. "
             "Primero una linea muy muy larga..................."
             "................................................"
             ".............."
@@ -32,6 +33,7 @@ void kernel_start(void) {
             "\t\t ok.... y ahora...Salto\b\b me gusta\nXXXX"
             "XXXXXXXXXXXXXXXXXXX\rY");
 */
+
 
 
     while (1) {
