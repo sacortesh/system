@@ -25,12 +25,17 @@ unsigned short *ptr_mem(unsigned lig, unsigned col) {
 
 }
 
+void defilement(void) {
+
+    memmove((void *) 0xB8000, (void *) 0xB8000 + 2 * (1 * 80 + 0), (size_t) 4000);
+
+}
+
 void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond) {
 
     unsigned short * ptr = ptr_mem(lig, col);
     //1 llamar a metodo que me dqrq la direccion donde guqrdar el caracter
     *ptr = c | (0 << 15) | (fond << 12);
-    (color << 15) | (fond << 12);
 
 }
 
@@ -143,11 +148,7 @@ void traite_car(unsigned char c) {
 
 }
 
-void defilement(void) {
 
-    memmove((void *) 0xB8000, (void *) 0xB8000 + 2 * (1 * 80 + 0), (size_t) 4000);
-
-}
 
 void console_putbytes(const char *chaine, int taille) {
     int l = 0;
@@ -155,7 +156,7 @@ void console_putbytes(const char *chaine, int taille) {
         traite_car(chaine[l]);
         l++;
     }
-    return 0;
+    return;
 }
 
 
