@@ -1,5 +1,6 @@
 #include <cpu.h>
 #include "debug.h"
+#include "console.h"
 
 // on peut s'entrainer a utiliser GDB avec ce code de base
 // par exemple afficher les valeurs de x, n et res avec la commande display
@@ -21,9 +22,11 @@ void kernel_start(void) {
     // quand on saura gerer l'ecran, on pourra afficher x
     (void) x;
     // on ne doit jamais sortir de kernel_start
+    ecran_init();
 
 
-    printf("\fHola... es hora de probar si esto funciona bien. "
+
+    printf("Hola... es hora de probar si esto funciona bien. "
             "Primero una linea muy muy larga..................."
             "................................................"
             "..............");
@@ -32,6 +35,7 @@ void kernel_start(void) {
             "\t\t");
     printf(" ok.... y ahora...Salto\b\b me gusta\nXXXX"
             "XXXXXXXXXXXXXXXXXXX\rY");
+
 
     while (1) {
         // cette fonction arrete le processeur

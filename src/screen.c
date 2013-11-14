@@ -8,6 +8,7 @@
 #include "string.h"
 #include "cpu.h"
 #include "stdint.h"
+#include "console.h"
 
 
 /*
@@ -27,17 +28,20 @@ unsigned short *ptr_mem(unsigned lig, unsigned col) {
 
 }
 
-void defilement(void) {
-
-    memmove((void *) 0xB8000, (void *) 0xB8000 + 2 * (1 * 80 + 0), (size_t) 4000);
-
-}
-
 void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond) {
     //ct
     unsigned short * ptr = ptr_mem(lig, col);
     //1 llamar a metodo que me dqrq la direccion donde guqrdar el caracter
     *ptr = c | (0 << 15) | (fond << 12) | (color << 8);
+
+}
+
+void defilement(void) {
+    // il faut verifier que les movement soient bien fait sans effacer le status bar
+    memmove((void *) 0xB8000, (void *) 0xB8000 + 2 * (1 * 80 + 0), (size_t) 4000);
+    for (int x = 0; x < NUM_COL; x++) {
+        ecrit_car(NUM_LIG - 1, x, ' ', OS_FNT_COLOR, OS_BCK_COLOR);
+    }
 
 }
 
@@ -159,5 +163,42 @@ void console_putbytes(const char *chaine, int taille) {
     return;
 }
 
+void prnt_horloge(const char *heure, const char *minute, const char *seconde) {
+
+    ecrit_car(0, 72, heure[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 73, heure[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 74, 'h', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 75, minute[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 76, minute[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 76, 'm', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 77, seconde[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 78, seconde[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 79, 's', OS_BCK_COLOR, OS_FNT_COLOR);
+
+
+}
+
+void prnt_status() {
+
+    for (int x = 0; x < NUM_COL; x++) {
+        ecrit_car(0, x, ' ', OS_BCK_COLOR, OS_FNT_COLOR);
+    }
+
+    ecrit_car(0, 1, 'X', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 2, 'u', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 3, 'r', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 4, 'X', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 5, 'O', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 6, 'S', OS_BCK_COLOR, OS_FNT_COLOR);
+
+    prnt_horloge("00", "00", "00");
+}
+
+void ecran_init() {
+
+    efface_ecran();
+    prnt_status();
+    place_curseur(1, 0);
+}
 
 
