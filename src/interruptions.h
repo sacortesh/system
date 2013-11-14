@@ -8,16 +8,11 @@
 #ifndef INTERRUPTIONS_H
 #define	INTERRUPTIONS_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+#include "stdbool.h"
 
 
-
-
-#ifdef	__cplusplus
-}
-#endif
+void init_traitant_IT(int num_IT, void (*traitant)(void));
+void masque_IRQ(unsigned int num_IRQ, bool masque);
 
 #endif	/* INTERRUPTIONS_H */
 

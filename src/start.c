@@ -23,7 +23,7 @@ void kernel_start(void) {
     (void) x;
     // on ne doit jamais sortir de kernel_start
     ecran_init();
-
+    sti();
 
 
     printf("Hola... es hora de probar si esto funciona bien. "

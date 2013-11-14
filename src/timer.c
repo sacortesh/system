@@ -1,5 +1,8 @@
 #include "stdio.h"
 #include "timer.h"
+#include "interruptions.h"
+#include "stdbool.h"
+#include "console.h"
 
 int cpt;
 int heure;
@@ -12,8 +15,7 @@ void init_horloge() {
     outb(0x34, 0x43);
     outb((QUARTZ / CLOCKFREQ) % 256, 0x40);
     outb((QUARTZ / CLOCKFREQ) >> 8, 0x40);
-    //interruption
-
+    masque_IRQ(0, false);
 
 }
 
@@ -31,6 +33,7 @@ void tic_PIT() {
             }
         }
     }
-
+    
+    prnt_horloge(heure, minute, seconde);
 }
 

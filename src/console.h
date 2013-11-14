@@ -7,6 +7,6 @@
  */
 extern void console_putbytes(const char *s, int len);
 extern void ecran_init();
-extern void prnt_horloge("00", "00", "00");
+extern void prnt_horloge(int heure, int minute, int seconde);
 
 #endif

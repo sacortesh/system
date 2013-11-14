@@ -163,8 +163,21 @@ void console_putbytes(const char *chaine, int taille) {
     return;
 }
 
-void prnt_horloge(const char *heure, const char *minute, const char *seconde) {
-
+void prnt_horloge(int heure, int minute, int seconde) {
+    char format[5];
+    char temp[1];
+       
+    if (heure < 10){
+        format[0] = '0';
+        format[1] = (char) heure;
+    }else{
+        temp = (char*) heure;
+        format[0] = temp[0];
+        format[1] = temp[1];
+    }
+    
+    //TODO finish heure, minute, seconde... then test then profit    
+     
     ecrit_car(0, 72, heure[0], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 73, heure[1], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 74, 'h', OS_BCK_COLOR, OS_FNT_COLOR);
