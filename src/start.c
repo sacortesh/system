@@ -1,12 +1,17 @@
 #include <cpu.h>
 #include "debug.h"
 #include "console.h"
+#include "timer.h"
+#include "interruptions.h"
 
 // on peut s'entrainer a utiliser GDB avec ce code de base
 // par exemple afficher les valeurs de x, n et res avec la commande display
 
 // une fonction bien connue
 
+
+
+/*
 unsigned fact(unsigned n) {
     unsigned res;
     if (n <= 1) {
@@ -16,14 +21,19 @@ unsigned fact(unsigned n) {
     }
     return res;
 }
+*/
 
 void kernel_start(void) {
-    unsigned x = fact(5);
+    //unsigned x = fact(5);
     // quand on saura gerer l'ecran, on pourra afficher x
-    (void) x;
+    //(void) x;
     // on ne doit jamais sortir de kernel_start
     ecran_init();
+    
+    init_horloge();
+    init_traitant_IT(32, traitant_IT_32);
     sti();
+
 
 
     printf("Hola... es hora de probar si esto funciona bien. "
@@ -35,6 +45,7 @@ void kernel_start(void) {
             "\t\t");
     printf(" ok.... y ahora...Salto\b\b me gusta\nXXXX"
             "XXXXXXXXXXXXXXXXXXX\rY");
+
 
 
     while (1) {

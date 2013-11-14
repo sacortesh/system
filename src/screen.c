@@ -9,6 +9,7 @@
 #include "cpu.h"
 #include "stdint.h"
 #include "console.h"
+#include "debug.h"
 
 
 /*
@@ -27,6 +28,7 @@ unsigned short *ptr_mem(unsigned lig, unsigned col) {
     return (unsigned short *) (0xB8000 + 2 * (lig * NUM_COL + col));
 
 }
+
 
 void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond) {
     //ct
@@ -165,27 +167,48 @@ void console_putbytes(const char *chaine, int taille) {
 
 void prnt_horloge(int heure, int minute, int seconde) {
     char format[5];
-    char temp[1];
-       
-    if (heure < 10){
-        format[0] = '0';
-        format[1] = (char) heure;
-    }else{
-        temp = (char*) heure;
-        format[0] = temp[0];
-        format[1] = temp[1];
+    char temp[2];
+
+    //temp = integer_to_array(heure, temp);
+
+
+    if (heure < 10) {
+        sprintf(temp, "0%d", heure);
+    } else {
+        sprintf(temp, "%d", heure);
     }
+
+    format[0] = temp[0];
+    format[1] = temp[1];
     
+    
+    if (heure < 10) {
+        sprintf(temp, "0%d", minute);
+    } else {
+        sprintf(temp, "%d", minute);
+    }
+
+    format[2] = temp[0];
+    format[3] = temp[1];
+
+    if (heure < 10) {
+        sprintf(temp, "0%d", seconde);
+    } else {
+        sprintf(temp, "%d", seconde);
+    }
+
+    format[4] = temp[0];
+    format[5] = temp[1];
     //TODO finish heure, minute, seconde... then test then profit    
-     
-    ecrit_car(0, 72, heure[0], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 73, heure[1], OS_BCK_COLOR, OS_FNT_COLOR);
+
+    ecrit_car(0, 72, format[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 73, format[1], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 74, 'h', OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 75, minute[0], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 76, minute[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 75, format[2], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 76, format[3], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 76, 'm', OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 77, seconde[0], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 78, seconde[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 77, format[4], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 78, format[5], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 79, 's', OS_BCK_COLOR, OS_FNT_COLOR);
 
 
@@ -204,7 +227,8 @@ void prnt_status() {
     ecrit_car(0, 5, 'O', OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 6, 'S', OS_BCK_COLOR, OS_FNT_COLOR);
 
-    prnt_horloge("00", "00", "00");
+    //Possibly useless line
+    prnt_horloge(0, 0, 0);
 }
 
 void ecran_init() {
@@ -213,5 +237,7 @@ void ecran_init() {
     prnt_status();
     place_curseur(1, 0);
 }
+
+
 
 

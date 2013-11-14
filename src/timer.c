@@ -3,6 +3,7 @@
 #include "interruptions.h"
 #include "stdbool.h"
 #include "console.h"
+#include "cpu.h"
 
 int cpt;
 int heure;
@@ -20,15 +21,17 @@ void init_horloge() {
 }
 
 void tic_PIT() {
+    outb(0x20, 0x20);
     cpt++;
 
     if ((cpt % 50 == 0)) {
+        cpt = 0;
         seconde++;
         if (seconde == 60) {
-            seconde == 0;
+            seconde = 0;
             minute++;
             if (minute == 60) {
-                minute == 0;
+                minute = 0;
                 heure++;
             }
         }

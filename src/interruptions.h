@@ -13,6 +13,7 @@
 
 void init_traitant_IT(int num_IT, void (*traitant)(void));
 void masque_IRQ(unsigned int num_IRQ, bool masque);
+extern void traitant_IT_32();
 
 #endif	/* INTERRUPTIONS_H */
 

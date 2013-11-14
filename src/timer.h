@@ -11,6 +11,10 @@
 #define QUARTZ 0x1234DD
 #define CLOCKFREQ 50
 
+void init_horloge();
+void tic_PIT();
+
+
 
 #endif	/* TIMER_H */
 
