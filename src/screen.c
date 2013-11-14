@@ -16,6 +16,8 @@
 
 #define NUM_COL 80
 #define NUM_LIG 25
+#define OS_BCK_COLOR 4 //BlOOD OF KINGU
+#define OS_FNT_COLOR 15
 
 int cur_lig_pos = 0;
 int cur_col_pos = 0;
@@ -60,7 +62,7 @@ void efface_ecran() {
 
     for (int y = 0; y < NUM_LIG; y++) {
         for (int x = 0; x < NUM_COL; x++) {
-            ecrit_car(y, x, ' ', 15, 4);
+            ecrit_car(y, x, ' ', OS_FNT_COLOR, OS_BCK_COLOR);
         }
     }
 
@@ -73,7 +75,7 @@ void traite_car(unsigned char c) {
 
     if (ch <= 126 && ch >= 32) {
 
-        ecrit_car(cur_lig_pos, cur_col_pos, c, 15, 0);
+        ecrit_car(cur_lig_pos, cur_col_pos, c, OS_FNT_COLOR, OS_BCK_COLOR);
 
         if (cur_lig_pos + 1 < NUM_LIG && cur_col_pos + 1 < NUM_COL) {
             place_curseur(cur_lig_pos, cur_col_pos + 1);
