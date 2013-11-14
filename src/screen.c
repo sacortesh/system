@@ -60,7 +60,7 @@ void efface_ecran() {
 
     for (int y = 0; y < NUM_LIG; y++) {
         for (int x = 0; x < NUM_COL; x++) {
-            ecrit_car(y, x, ' ', 15, 0);
+            ecrit_car(y, x, ' ', 15, 4);
         }
     }
 
@@ -80,7 +80,7 @@ void traite_car(unsigned char c) {
         } else if (cur_col_pos + 1 == NUM_COL) {
 
             if (cur_lig_pos + 1 < NUM_LIG) {
-                place_curseur(cur_lig_pos++, 0);
+                place_curseur(cur_lig_pos + 1, 0);
             }
 
         } else {
@@ -111,7 +111,7 @@ void traite_car(unsigned char c) {
                 }
             }
 
-            place_curseur(new_x, new_y);
+            place_curseur(new_y, new_x);
 
         }
         if (ch == 10) {
@@ -127,13 +127,13 @@ void traite_car(unsigned char c) {
             }
 
         }
-        
+
         if (ch == 12) {
             efface_ecran();
             place_curseur(0, 0);
 
         }
-        
+
         if (ch == 13) {
             place_curseur(cur_lig_pos, 0);
         }
@@ -147,7 +147,6 @@ void traite_car(unsigned char c) {
 
 
 }
-
 
 void console_putbytes(const char *chaine, int taille) {
     int l = 0;

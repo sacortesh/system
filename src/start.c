@@ -19,21 +19,19 @@ unsigned fact(unsigned n) {
 void kernel_start(void) {
     unsigned x = fact(5);
     // quand on saura gerer l'ecran, on pourra afficher x
-    (void)x;
+    (void) x;
     // on ne doit jamais sortir de kernel_start
 
 
-    printf("Hola... es hora de probar si esto funciona bien. "
+    printf("\fHola... es hora de probar si esto funciona bien. "
             "Primero una linea muy muy larga..................."
             "................................................"
-            ".............."
-            ".\nFin de linea ? .... Hasta aqui todo va bien.... "
+            "..............");
+    printf(".\nFin de linea ? .... Hasta aqui todo va bien.... "
             "ahora muchas tabulaciones\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-            "\t\t ok.... y ahora...Salto\b\b me gusta\nXXXX"
+            "\t\t");
+    printf(" ok.... y ahora...Salto\b\b me gusta\nXXXX"
             "XXXXXXXXXXXXXXXXXXX\rY");
-
-
-
 
     while (1) {
         // cette fonction arrete le processeur
