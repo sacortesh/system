@@ -166,49 +166,45 @@ void console_putbytes(const char *chaine, int taille) {
 }
 
 void prnt_horloge(int heure, int minute, int seconde) {
-    char format[5];
-    char temp[2];
+    
+        
+    char str_heure[2];
+    char str_minute[2];
+    char str_seconde[2];
 
     //temp = integer_to_array(heure, temp);
 
 
     if (heure < 10) {
-        sprintf(temp, "0%d", heure);
+        sprintf(str_heure, "0%d", heure);
     } else {
-        sprintf(temp, "%d", heure);
+        sprintf(str_heure, "%d", heure);
     }
-
-    format[0] = temp[0];
-    format[1] = temp[1];
+   
     
-    
-    if (heure < 10) {
-        sprintf(temp, "0%d", minute);
+    if (minute < 10) {
+        sprintf(str_minute, "0%d", minute);
     } else {
-        sprintf(temp, "%d", minute);
+        sprintf(str_minute, "%d", minute);
     }
 
-    format[2] = temp[0];
-    format[3] = temp[1];
-
-    if (heure < 10) {
-        sprintf(temp, "0%d", seconde);
+    if (seconde < 10) {
+        sprintf(str_seconde, "0%d", seconde);
     } else {
-        sprintf(temp, "%d", seconde);
+        sprintf(str_seconde, "%d", seconde);
     }
 
-    format[4] = temp[0];
-    format[5] = temp[1];
+   
     //TODO finish heure, minute, seconde... then test then profit    
 
-    ecrit_car(0, 72, format[0], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 73, format[1], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 74, 'h', OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 75, format[2], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 76, format[3], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 71, str_heure[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 72, str_heure[1], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 73, 'h', OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 74, str_minute[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 75, str_minute[1], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 76, 'm', OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 77, format[4], OS_BCK_COLOR, OS_FNT_COLOR);
-    ecrit_car(0, 78, format[5], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 77, str_seconde[0], OS_BCK_COLOR, OS_FNT_COLOR);
+    ecrit_car(0, 78, str_seconde[1], OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 79, 's', OS_BCK_COLOR, OS_FNT_COLOR);
 
 
