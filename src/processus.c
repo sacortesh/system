@@ -75,7 +75,7 @@ void init_processus() {
     t_processus[1].pid = 1;
 
     t_processus[1].esp[0] = &t_processus[1].stack[0];
-    t_processus[1].stack[0] = (unsigned long) &proc1()  ;
+    t_processus[1].stack[0] = (unsigned long) &proc1  ;
 
 
 }

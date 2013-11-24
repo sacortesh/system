@@ -20,6 +20,7 @@
 
 extern void ctx_sw(unsigned long * courante_proc, unsigned long * nouveau_proc);
 void idle(void);
+void init_processus();
 
 #endif	/* PROCESSUS_H */
 

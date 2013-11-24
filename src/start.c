@@ -3,6 +3,7 @@
 #include "console.h"
 #include "timer.h"
 #include "interruptions.h"
+#include "processus.h"
 
 // on peut s'entrainer a utiliser GDB avec ce code de base
 // par exemple afficher les valeurs de x, n et res avec la commande display
@@ -33,17 +34,9 @@ void kernel_start(void) {
     init_horloge();
     init_traitant_IT(32, traitant_IT_32);
     
-    
-    
-    printf("Hola... es hora de probar si esto funciona bien. "
-            "Primero una linea muy muy larga..................."
-            "................................................"
-            "..............");
-    printf(".\nFin de linea ? .... Hasta aqui todo va bien.... "
-            "ahora muchas tabulaciones\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-            "\t\t");
-    printf(" ok.... y ahora...Salto\b\b me gusta\nXXXX"
-            "XXXXXXXXXXXXXXXXXXX\rY");
+    init_processus();
+      
+   
     idle();
 
 
