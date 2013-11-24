@@ -32,10 +32,9 @@ void kernel_start(void) {
     
     init_horloge();
     init_traitant_IT(32, traitant_IT_32);
-    sti();
-
-
-
+    
+    
+    
     printf("Hola... es hora de probar si esto funciona bien. "
             "Primero una linea muy muy larga..................."
             "................................................"
@@ -45,6 +44,9 @@ void kernel_start(void) {
             "\t\t");
     printf(" ok.... y ahora...Salto\b\b me gusta\nXXXX"
             "XXXXXXXXXXXXXXXXXXX\rY");
+    idle();
+
+
 
 
 
