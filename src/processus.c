@@ -32,36 +32,103 @@ typedef struct processus {
     char nom[MAXNOMTAILLE];
     int pid;
     int etat;
-    unsigned long* esp[REQ_REG];
-    unsigned long stack[QUANPROC];
+
+    /*
+    ebx
+    esp
+    ebp
+    esi
+    edi
+     */
+    unsigned long registres[REQ_REG - 1];
+
+    unsigned long stack[STCK_PROC - 1];
 } processus;
 
-processus t_processus[2];
+processus* t_processus[QUANPROC - 1];
+
+processus* actif;
+
+int mon_pid(void) {
+    return actif->pid;
+}
+
+char *mon_nom(void) {
+    return actif->nom;
+}
+
+void ordonnance(void) {
+
+    //Je trouve le index du processus à activer
+
+
+    int nouvProc = 1 - mon_pid();
+
+    actif->etat = activable;
+    actif = t_processus[nouvProc];
+    actif->etat = elu;
+
+    int ancProc = 1 - mon_pid();
+
+
+    ctx_sw(&t_processus[ancProc]->registres, &t_processus[nouvProc]->registres);
+
+
+
+
+}
 
 void idle(void) {
-    printf("[idle] je tente de passer la main a proc1...\n");
-    ctx_sw(t_processus[0].esp[0], t_processus[1].esp[0]);
+    /*
+        for (int i = 0; i < 3; i++) {
+            printf("[idle] je tente de passer la main a proc1...\n");
+            ctx_sw(&t_processus[0]->registres, &t_processus[1]->registres);
+            printf("[idle] proc1 m'a redonne la main\n");
+        }
+        printf("[idle] je bloque le systeme\n");
+        hlt();
+     */
+
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100000000; i++);
+        ordonnance();
+    }
+
 }
 
 void proc1(void) {
-    printf("[proc1] idle m'a donne la main\n");
-    printf("[proc1] j'arrete le systeme\n");
-    hlt();
+    /*
+        for (;;) {
+            printf("[proc1] idle m'a donne la main\n");
+            printf("[proc1] je tente de lui la redonner...\n");
+            ctx_sw(&t_processus[1]->registres, &t_processus[0]->registres);
+        }
+        hlt();
+     */
+
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100000000; i++);
+        ordonnance();
+    }
+
 }
 
 void init_processus() {
     //Allocation
 
-    //TODO:
-    //Les erreurs
+    t_processus[0] = malloc(sizeof (processus));
+    processus* idlex = t_processus[0];
 
     //idle
-        
-    strcpy(t_processus[0].nom, "idle");
-    t_processus[0].etat = elu;
-    t_processus[0].pid = 0;
-    //proc1
 
+    strcpy(idlex->nom, "idle");
+    idlex->etat = elu;
+    idlex->pid = 0;
+
+    //Initialiser le processus actif
+    actif = idlex;
 
     /* pour proc1 la case de la zone de sauvegarde des registres correspondant à %esp
      * doit pointer sur le sommet de pile, et la case en sommet de pile doit contenir 
@@ -69,13 +136,21 @@ void init_processus() {
      * gérer la première exécution de proc1.  Quoi!?!?!?!?!
      */
 
-    
-    strcpy(t_processus[1].nom, "proc1");
-    t_processus[1].etat = activable;
-    t_processus[1].pid = 1;
+    t_processus[1] = malloc(sizeof (processus));
+    processus* procc1 = t_processus[1];
 
-    t_processus[1].esp[0] = &t_processus[1].stack[0];
-    t_processus[1].stack[0] = (unsigned long) &proc1  ;
+
+    strcpy(procc1->nom, "proc1");
+    procc1->etat = activable;
+    procc1->pid = 1;
+    //procc1->registres = (unsigned long*) malloc(REQ_REG * sizeof (unsigned long));
+    //procc1->stack = (unsigned long*) malloc(STCK_PROC * sizeof (unsigned long));
+
+
+
+    procc1->stack[STCK_PROC - 1] = (unsigned long) proc1;
+    procc1->registres[1] = (unsigned long) &procc1->stack[STCK_PROC - 1];
+
 
 
 }
