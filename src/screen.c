@@ -18,7 +18,7 @@
 
 #define NUM_COL 80
 #define NUM_LIG 25
-#define OS_BCK_COLOR 4 //BlOOD OF KINGU
+#define OS_BCK_COLOR 4
 #define OS_FNT_COLOR 15
 
 int cur_lig_pos = 0;
@@ -29,7 +29,6 @@ unsigned short *ptr_mem(unsigned lig, unsigned col) {
 
 }
 
-
 void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond) {
     //ct
     unsigned short * ptr = ptr_mem(lig, col);
@@ -38,9 +37,16 @@ void ecrit_car(unsigned lig, unsigned col, char c, unsigned color, unsigned fond
 
 }
 
+
+//0xb80a0
+//0xb8efe
+//0xb8f9c
+
 void defilement(void) {
-    // il faut verifier que les movement soient bien fait sans effacer le status bar
-    memmove((void *) 0xB8000, (void *) 0xB8000 + 2 * (1 * 80 + 0), (size_t) 4000);
+    // Les adresses de memoire ne sont pas aleatoires. Je l'ai fait comme pour conserver un "bar
+    //d'etat" et aussi  l'espace por l'horloge. Mon OS a donc seulement 24 lignes pour montrer execution
+    //J'ai trouve ces lignes avec experiments
+    memmove((void *) 0xB80a0, (void *) 0xB8140, (size_t) 2 * (NUM_LIG - 1) * NUM_COL);
     for (int x = 0; x < NUM_COL; x++) {
         ecrit_car(NUM_LIG - 1, x, ' ', OS_FNT_COLOR, OS_BCK_COLOR);
     }
@@ -49,6 +55,7 @@ void defilement(void) {
 
 void place_curseur(unsigned lig, unsigned col) {
 
+    //chaque fois que le curseur est mise a jour, les variables globales sont aussi MAJ
     cur_lig_pos = lig;
     cur_col_pos = col;
 
@@ -64,7 +71,8 @@ void place_curseur(unsigned lig, unsigned col) {
 }
 
 void efface_ecran() {
-    //hacer una funcion que escriba caracteres en blancos. Luego hacerlo recorrer por todo el tablero.
+    //J'ai le fait de cette maniere pour mantenir le couleur de l'ecran,
+    //c'est probablement un peu plus simple avec un des functions de gestion de memoire;
 
     for (int y = 0; y < NUM_LIG; y++) {
         for (int x = 0; x < NUM_COL; x++) {
@@ -83,18 +91,24 @@ void traite_car(unsigned char c) {
 
         ecrit_car(cur_lig_pos, cur_col_pos, c, OS_FNT_COLOR, OS_BCK_COLOR);
 
-        if (cur_lig_pos + 1 < NUM_LIG && cur_col_pos + 1 < NUM_COL) {
+        if (cur_col_pos + 1 < NUM_COL) {
             place_curseur(cur_lig_pos, cur_col_pos + 1);
         } else if (cur_col_pos + 1 == NUM_COL) {
 
             if (cur_lig_pos + 1 < NUM_LIG) {
                 place_curseur(cur_lig_pos + 1, 0);
+            } else {
+                defilement();
+                place_curseur(cur_lig_pos, 0);
             }
 
-        } else {
-            defilement();
-            place_curseur(cur_lig_pos, 0);
         }
+        /*
+                else {
+                    defilement();
+                    place_curseur(cur_lig_pos, 0);
+                }
+         */
 
     } else {
 
@@ -137,12 +151,14 @@ void traite_car(unsigned char c) {
         }
 
         if (ch == 12) {
+            //Alors... LF
             efface_ecran();
             place_curseur(0, 0);
 
         }
 
         if (ch == 13) {
+            //Alors... LF
             place_curseur(cur_lig_pos, 0);
         }
 
@@ -166,8 +182,8 @@ void console_putbytes(const char *chaine, int taille) {
 }
 
 void prnt_horloge(int heure, int minute, int seconde) {
-    
-        
+
+
     char str_heure[2];
     char str_minute[2];
     char str_seconde[2];
@@ -180,8 +196,8 @@ void prnt_horloge(int heure, int minute, int seconde) {
     } else {
         sprintf(str_heure, "%d", heure);
     }
-   
-    
+
+
     if (minute < 10) {
         sprintf(str_minute, "0%d", minute);
     } else {
@@ -194,7 +210,7 @@ void prnt_horloge(int heure, int minute, int seconde) {
         sprintf(str_seconde, "%d", seconde);
     }
 
-   
+
     //TODO finish heure, minute, seconde... then test then profit    
 
     ecrit_car(0, 71, str_heure[0], OS_BCK_COLOR, OS_FNT_COLOR);
@@ -216,6 +232,7 @@ void prnt_status() {
         ecrit_car(0, x, ' ', OS_BCK_COLOR, OS_FNT_COLOR);
     }
 
+    //C'est le nom de mon OS :)
     ecrit_car(0, 1, 'X', OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 2, 'u', OS_BCK_COLOR, OS_FNT_COLOR);
     ecrit_car(0, 3, 'r', OS_BCK_COLOR, OS_FNT_COLOR);

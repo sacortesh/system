@@ -49,6 +49,8 @@ processus* t_processus[QUANPROC - 1];
 
 processus* actif;
 
+void allouer_struct_processus();
+
 int mon_pid(void) {
     return actif->pid;
 }
@@ -79,7 +81,7 @@ void ordonnance(void) {
 }
 
 void idle(void) {
-    /*
+    /* TEST1 et 2
         for (int i = 0; i < 3; i++) {
             printf("[idle] je tente de passer la main a proc1...\n");
             ctx_sw(&t_processus[0]->registres, &t_processus[1]->registres);
@@ -98,7 +100,7 @@ void idle(void) {
 }
 
 void proc1(void) {
-    /*
+    /*TEST1 et 2
         for (;;) {
             printf("[proc1] idle m'a donne la main\n");
             printf("[proc1] je tente de lui la redonner...\n");
