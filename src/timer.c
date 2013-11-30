@@ -4,6 +4,7 @@
 #include "stdbool.h"
 #include "console.h"
 #include "cpu.h"
+#include "processus.h"
 
 int cpt;
 int heure;
@@ -38,5 +39,6 @@ void tic_PIT() {
     }
     
     prnt_horloge(heure, minute, seconde);
+    ordonnance();
 }
 

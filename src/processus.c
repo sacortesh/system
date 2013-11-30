@@ -41,8 +41,8 @@ typedef struct processus {
     3->esi
     4->edi
      */
-    unsigned long registres[REQ_REG - 1];
-    unsigned long stack[STCK_PROC - 1];
+    unsigned long registres[REQ_REG];
+    unsigned long stack[STCK_PROC];
     struct processus* suiv;
 } processus;
 
@@ -53,7 +53,8 @@ int processus_crees = 0;
 
 void ajouter_en_tete(processus* proc) {
     if (tete == NULL) {
-        tete = queue = proc;
+        tete = proc;
+        queue = proc;
     } else {
         processus* tmp = tete;
         tete = proc;
@@ -63,7 +64,8 @@ void ajouter_en_tete(processus* proc) {
 
 void ajouter_en_queue(processus* proc) {
     if (tete == NULL) {
-        tete = queue = proc;
+        tete = proc;
+        queue = proc;
     } else {
         queue->suiv = proc;
         queue = queue->suiv;
@@ -80,19 +82,19 @@ processus* retirer_de_tete() {
     }
 }
 
-
 int cree_processus(void (*code)(void), char *nom) {
     //initialitation
 
     int pid = processus_crees++;
 
-    processus *tmp = (processus*) malloc(sizeof (processus));
+    processus * tmp = (processus *) malloc(sizeof (processus));
 
     strcpy(tmp->nom, nom);
     tmp->etat = activable;
     tmp->pid = pid;
-    tmp->stack[STCK_PROC - 1] = (unsigned long) code;
-    tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 1];
+
+    tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 2];
+    tmp->stack[STCK_PROC - 2] = (unsigned long) code;
 
     ajouter_en_queue(tmp);
 
@@ -105,16 +107,16 @@ int cree_processus_idle(char *nom) {
 
     int pid = processus_crees++;
 
-    processus *tmp = (processus*) malloc(sizeof (processus));
+    processus * tmp = (processus *) malloc(sizeof (processus));
 
     strcpy(tmp->nom, nom);
     tmp->etat = elu;
     tmp->pid = pid;
-    
+
     //Initialiser le processus actif
     actif = tmp;
 
-    
+
     return pid;
 
 }
@@ -129,19 +131,14 @@ char* mon_nom(void) {
 
 void ordonnance(void) {
 
-
-    actif->etat = activable;
-    processus* ancien = actif;
+    processus * ancien = actif;
+    ancien->etat = activable;
     ajouter_en_queue(ancien);
-    actif = retirer_de_tete();
-    actif->etat = elu;
+    processus * nouveau = retirer_de_tete();
+    nouveau->etat = elu;
+    actif = nouveau;
 
-
-
-    ctx_sw(ancien->registres, actif->registres);
-
-
-
+    ctx_sw(ancien->registres, nouveau->registres);
 
 }
 
@@ -156,10 +153,20 @@ void idle(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
+
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -174,11 +181,21 @@ void proc1(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
+
 
 }
 
@@ -192,10 +209,19 @@ void proc2(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -210,10 +236,19 @@ void proc3(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -228,10 +263,19 @@ void proc4(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -246,10 +290,19 @@ void proc5(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -264,10 +317,19 @@ void proc6(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
@@ -282,17 +344,26 @@ void proc7(void) {
         hlt();
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100000000; i++);
-        ordonnance();
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
     }
 
 }
 
 void init_processus() {
-    
-    
+
+
 
     /* pour proc1 la case de la zone de sauvegarde des registres correspondant à %esp
      * doit pointer sur le sommet de pile, et la case en sommet de pile doit contenir 
@@ -305,6 +376,13 @@ void init_processus() {
 
     cree_processus_idle("idle");
     cree_processus(proc1, "proc1");
+    cree_processus(proc2, "proc2");
+    cree_processus(proc3, "proc3");
+    cree_processus(proc4, "proc4");
+    cree_processus(proc5, "proc5");
+    cree_processus(proc6, "proc6");
+    cree_processus(proc7, "proc7");
+
 
 }
 
