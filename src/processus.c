@@ -46,38 +46,43 @@ typedef struct processus {
     struct processus* suiv;
 } processus;
 
+typedef struct list_processus {
+    processus* tete;
+    processus* queue;
+} list_processus;
+
 processus* actif;
-processus* tete;
-processus* queue;
+list_processus activables;
+
 int processus_crees = 0;
 
-void ajouter_en_tete(processus* proc) {
-    if (tete == NULL) {
-        tete = proc;
-        queue = proc;
+void ajouter_en_tete(processus* proc, list_processus* liste) {
+    if (liste->tete == NULL) {
+        liste->tete = proc;
+        liste->queue = proc;
     } else {
-        processus* tmp = tete;
-        tete = proc;
-        tete->suiv = tmp;
+        processus* tmp = liste->tete;
+        liste->tete = proc;
+        liste->tete->suiv = tmp;
     }
 }
 
-void ajouter_en_queue(processus* proc) {
-    if (tete == NULL) {
-        tete = proc;
-        queue = proc;
+void ajouter_en_queue(processus* proc, list_processus* liste) {
+    if (liste->tete == NULL) {
+        liste->tete = proc;
+        liste->queue = proc;
     } else {
-        queue->suiv = proc;
-        queue = queue->suiv;
+        liste->queue->suiv = proc;
+        liste->queue = liste->queue->suiv;
     }
 }
 
-processus* retirer_de_tete() {
-    if (tete == NULL) {
+processus* retirer_de_tete(list_processus* liste) {
+    if (liste->tete == NULL) {
         return NULL;
     } else {
-        processus* tmp = tete;
-        tete = tete->suiv;
+        processus* tmp = liste->tete;
+        liste->tete = liste->tete->suiv;
         return tmp;
     }
 }
@@ -96,7 +101,7 @@ int cree_processus(void (*code)(void), char *nom) {
     tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 2];
     tmp->stack[STCK_PROC - 2] = (unsigned long) code;
 
-    ajouter_en_queue(tmp);
+    ajouter_en_queue(tmp, &activables);
 
     return pid;
 
@@ -133,8 +138,8 @@ void ordonnance(void) {
 
     processus * ancien = actif;
     ancien->etat = activable;
-    ajouter_en_queue(ancien);
-    processus * nouveau = retirer_de_tete();
+    ajouter_en_queue(ancien, &activables);
+    processus * nouveau = retirer_de_tete(&activables);
     nouveau->etat = elu;
     actif = nouveau;
 
@@ -371,9 +376,6 @@ void init_processus() {
      * gérer la première exécution de proc1.  Quoi!?!?!?!?!
      */
 
-    //t_processus[1] = malloc(sizeof (processus));
-    //processus procc1 = tableau_processus->t_processus[1];
-
     cree_processus_idle("idle");
     cree_processus(proc1, "proc1");
     cree_processus(proc2, "proc2");
@@ -381,7 +383,7 @@ void init_processus() {
     cree_processus(proc4, "proc4");
     cree_processus(proc5, "proc5");
     cree_processus(proc6, "proc6");
-    cree_processus(proc7, "proc7");
+    cree_processus(proc7, "proc7");     
 
 
 }
