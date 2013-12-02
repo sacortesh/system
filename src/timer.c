@@ -37,8 +37,12 @@ void tic_PIT() {
             }
         }
     }
-    
+
     prnt_horloge(heure, minute, seconde);
     ordonnance();
+}
+
+int nbr_secondes() {
+    return (heure * 3600)+(minute * 60) + seconde;
 }
 

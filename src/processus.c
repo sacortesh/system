@@ -25,7 +25,8 @@ sa pile d'exécution : qui est l'espace mémoire dans lequel sont stockés notam
 
 enum status {
     elu,
-    activable
+    activable,
+    endormi
 };
 
 typedef struct processus {
@@ -43,6 +44,7 @@ typedef struct processus {
      */
     unsigned long registres[REQ_REG];
     unsigned long stack[STCK_PROC];
+    unsigned int reveiller;
     struct processus* suiv;
 } processus;
 
@@ -53,6 +55,7 @@ typedef struct list_processus {
 
 processus* actif;
 list_processus activables;
+list_processus endormis;
 
 int processus_crees = 0;
 
@@ -74,6 +77,27 @@ void ajouter_en_queue(processus* proc, list_processus* liste) {
     } else {
         liste->queue->suiv = proc;
         liste->queue = liste->queue->suiv;
+    }
+}
+
+void ajouter_par_priorite(processus* proc, list_processus* liste) {
+    //Fait simplement pour reveiller un processus, avec le membre reveiller
+    if (liste->tete == NULL) {
+        liste->tete = proc;
+        liste->queue = proc;
+    } else {
+        processus* courante = liste->tete;
+        processus* ante_courante;
+        while (courante->reveiller < proc->reveiller && courante != NULL) {
+            ante_courante = courante;
+            courante = courante->suiv;
+        }
+
+        ante_courante->suiv = proc;
+        proc->suiv = courante;
+
+        if (proc->suiv == NULL)
+            liste->queue = proc;
     }
 }
 
@@ -145,6 +169,12 @@ void ordonnance(void) {
 
     ctx_sw(ancien->registres, nouveau->registres);
 
+}
+
+void dors(unsigned int nbr_secs) {
+    processus* tmp = retirer_de_tete(&activables);
+    tmp->reveiller nbr_secs;
+    ajouter_par_priorite(tmp, &endormis);
 }
 
 void idle(void) {
@@ -383,7 +413,7 @@ void init_processus() {
     cree_processus(proc4, "proc4");
     cree_processus(proc5, "proc5");
     cree_processus(proc6, "proc6");
-    cree_processus(proc7, "proc7");     
+    cree_processus(proc7, "proc7");
 
 
 }
