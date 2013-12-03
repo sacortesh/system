@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "string.h"
 #include "malloc.c.h"
+#include "timer.h"
 
 
 //TODO: TP3
@@ -107,6 +108,7 @@ processus* retirer_de_tete(list_processus* liste) {
     } else {
         processus* tmp = liste->tete;
         liste->tete = liste->tete->suiv;
+        tmp->suiv = NULL;
         return tmp;
     }
 }
@@ -160,6 +162,15 @@ char* mon_nom(void) {
 
 void ordonnance(void) {
 
+    int t_actuel = nbr_secondes();
+    processus* tmp;
+    while (1) {
+        if (endormis.tete!= NULL && endormis.tete->reveiller == t_actuel) {
+            tmp = retirer_de_tete(&endormis);
+            ajouter_en_queue(tmp, &activables);
+        }else break;
+    }
+
     processus * ancien = actif;
     ancien->etat = activable;
     ajouter_en_queue(ancien, &activables);
@@ -173,7 +184,7 @@ void ordonnance(void) {
 
 void dors(unsigned int nbr_secs) {
     processus* tmp = retirer_de_tete(&activables);
-    tmp->reveiller nbr_secs;
+    tmp->reveiller = nbr_secs + nbr_secondes();
     ajouter_par_priorite(tmp, &endormis);
 }
 

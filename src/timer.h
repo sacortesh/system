@@ -13,6 +13,7 @@
 
 void init_horloge();
 void tic_PIT();
+int nbr_secondes();
 
 
 
