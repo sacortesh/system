@@ -22,6 +22,9 @@ extern void ctx_sw(void * courante_proc, void * nouveau_proc);
 void idle(void);
 void init_processus();
 void ordonnance(void);
+void print_status();
+
+
 
 
 

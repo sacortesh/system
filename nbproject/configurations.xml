@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="88">
+<configurationDescriptor version="89">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -35,6 +35,7 @@
         <itemPath>src/printf.c</itemPath>
         <itemPath>src/processor_structs.c</itemPath>
         <itemPath>src/processor_structs.h</itemPath>
+        <itemPath>src/processus.c</itemPath>
         <itemPath>src/screen.c</itemPath>
         <itemPath>src/segment.h</itemPath>
         <itemPath>src/sprintf.c</itemPath>
@@ -76,6 +77,8 @@
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
       </compileType>
@@ -123,6 +126,8 @@
       </item>
       <item path="src/processor_structs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/processus.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="src/screen.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/segment.h" ex="false" tool="3" flavor2="0">
@@ -164,6 +169,8 @@
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
         <cTool>
@@ -222,6 +229,8 @@
       <item path="src/processor_structs.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/processor_structs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/processus.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/screen.c" ex="false" tool="0" flavor2="0">
       </item>

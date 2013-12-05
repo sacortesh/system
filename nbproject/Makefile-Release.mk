@@ -46,6 +46,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/panic.o \
 	${OBJECTDIR}/src/printf.o \
 	${OBJECTDIR}/src/processor_structs.o \
+	${OBJECTDIR}/src/processus.o \
 	${OBJECTDIR}/src/screen.o \
 	${OBJECTDIR}/src/sprintf.o \
 	${OBJECTDIR}/src/start.o \
@@ -130,6 +131,11 @@ ${OBJECTDIR}/src/processor_structs.o: src/processor_structs.c
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/processor_structs.o src/processor_structs.c
+
+${OBJECTDIR}/src/processus.o: src/processus.c 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/processus.o src/processus.c
 
 ${OBJECTDIR}/src/screen.o: src/screen.c 
 	${MKDIR} -p ${OBJECTDIR}/src

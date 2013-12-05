@@ -83,13 +83,26 @@ void ajouter_en_queue(processus* proc, list_processus* liste) {
 
 void ajouter_par_priorite(processus* proc, list_processus* liste) {
     //Fait simplement pour reveiller un processus, avec le membre reveiller
+    printf("%s essais de s'ajouter a la queue\n", proc->nom);
     if (liste->tete == NULL) {
         liste->tete = proc;
         liste->queue = proc;
     } else {
+
         processus* courante = liste->tete;
         processus* ante_courante;
-        while (courante->reveiller < proc->reveiller && courante != NULL) {
+
+        //Cas dans lequel le processus a reveiller est avant que la tete de la liste
+        if (courante->suiv == NULL && proc->reveiller < courante->reveiller) {
+
+            proc->suiv = courante;
+            liste->tete = proc;
+            return;
+
+        }
+
+
+        while (courante != NULL && courante->reveiller < proc->reveiller) {
             ante_courante = courante;
             courante = courante->suiv;
         }
@@ -100,6 +113,27 @@ void ajouter_par_priorite(processus* proc, list_processus* liste) {
         if (proc->suiv == NULL)
             liste->queue = proc;
     }
+}
+
+void print_liste(list_processus* liste) {
+    if (liste->tete == NULL) {
+        printf("Aucune processus dans cette liste\n");
+        return;
+    }
+
+    processus* cour = liste->tete;
+    do {
+        printf("{%i [%s] | Rev = %u }-> ", cour->pid, cour->nom, cour->reveiller);
+        cour = cour->suiv;
+    } while (cour != NULL);
+
+    printf("NULL\n");
+
+}
+
+void print_status() {
+    printf("Activables:");print_liste(&activables);
+    printf("Endormis:");print_liste(&endormis);
 }
 
 processus* retirer_de_tete(list_processus* liste) {
@@ -162,13 +196,16 @@ char* mon_nom(void) {
 
 void ordonnance(void) {
 
+
     int t_actuel = nbr_secondes();
     processus* tmp;
     while (1) {
-        if (endormis.tete!= NULL && endormis.tete->reveiller == t_actuel) {
+        if (endormis.tete != NULL && endormis.tete->reveiller == t_actuel) {
             tmp = retirer_de_tete(&endormis);
+            tmp->etat = activable;
             ajouter_en_queue(tmp, &activables);
-        }else break;
+            printf("ordonnanceur essais de ajouter %s a la queue\n", tmp->nom);
+        } else break;
     }
 
     processus * ancien = actif;
@@ -183,9 +220,14 @@ void ordonnance(void) {
 }
 
 void dors(unsigned int nbr_secs) {
-    processus* tmp = retirer_de_tete(&activables);
-    tmp->reveiller = nbr_secs + nbr_secondes();
-    ajouter_par_priorite(tmp, &endormis);
+    processus* ancien = actif;
+    ancien->reveiller = nbr_secs + nbr_secondes();
+    ancien->etat = endormi;
+    processus* nouveau = retirer_de_tete(&activables);
+    nouveau->etat = elu;
+    actif = nouveau;
+    ajouter_par_priorite(ancien, &endormis);
+    ctx_sw(ancien->registres, nouveau->registres);
 }
 
 void idle(void) {
@@ -207,9 +249,17 @@ void idle(void) {
         }
      */
 
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
+
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
         sti();
         hlt();
         cli();
@@ -234,14 +284,21 @@ void proc1(void) {
             ordonnance();
         }
      */
-    for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
-        sti();
-        hlt();
-        cli();
-    }
+    /*
+        TEST 3
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
 
+    for (;;) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(10);
+    }
 
 }
 
@@ -262,12 +319,19 @@ void proc2(void) {
             ordonnance();
         }
      */
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
+
     for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
-        sti();
-        hlt();
-        cli();
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(3);
     }
 
 }
@@ -289,14 +353,21 @@ void proc3(void) {
             ordonnance();
         }
      */
-    for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
-        sti();
-        hlt();
-        cli();
-    }
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
 
+
+    for (;;) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(5);
+    }
 }
 
 void proc4(void) {
@@ -421,10 +492,12 @@ void init_processus() {
     cree_processus(proc1, "proc1");
     cree_processus(proc2, "proc2");
     cree_processus(proc3, "proc3");
-    cree_processus(proc4, "proc4");
-    cree_processus(proc5, "proc5");
-    cree_processus(proc6, "proc6");
-    cree_processus(proc7, "proc7");
+    /*
+        cree_processus(proc4, "proc4");
+        cree_processus(proc5, "proc5");
+        cree_processus(proc6, "proc6");
+        cree_processus(proc7, "proc7");
+     */
 
 
 }

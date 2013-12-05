@@ -36,6 +36,8 @@ void tic_PIT() {
                 heure++;
             }
         }
+        
+        //print_status();
     }
 
     prnt_horloge(heure, minute, seconde);
