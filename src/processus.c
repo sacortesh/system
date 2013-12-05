@@ -223,11 +223,8 @@ void dors(unsigned int nbr_secs) {
     processus* ancien = actif;
     ancien->reveiller = nbr_secs + nbr_secondes();
     ancien->etat = endormi;
-    processus* nouveau = retirer_de_tete(&activables);
-    nouveau->etat = elu;
-    actif = nouveau;
     ajouter_par_priorite(ancien, &endormis);
-    ctx_sw(ancien->registres, nouveau->registres);
+    ordonnance();
 }
 
 void idle(void) {
