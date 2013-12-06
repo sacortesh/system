@@ -6,7 +6,10 @@
 #include "timer.h"
 
 
+
+
 //TODO: TP3
+
 
 /*
  * Structure des donnees pour le processus
@@ -82,23 +85,51 @@ void ajouter_en_queue(processus* proc, list_processus* liste) {
 }
 
 void ajouter_par_priorite(processus* proc, list_processus* liste) {
+    
+        
     //Fait simplement pour reveiller un processus, avec le membre reveiller
-    printf("%s essais de s'ajouter a la queue\n", proc->nom);
     if (liste->tete == NULL) {
         liste->tete = proc;
-        liste->queue = proc;
+        liste->queue = proc;    
     } else {
 
+        processus* gauche;
+        processus* droit;
+
+        droit = liste->tete;
+
+        int priorite = proc->reveiller;
+
+        //Cas dans lequel le processus a reveiller est avant que la tete de la liste
+        if (priorite < droit->reveiller) {
+            proc->suiv = droit;
+            liste->tete = proc;
+            return;
+        }
+
+
+        while(droit != NULL && priorite > droit->reveiller){
+            gauche = droit;
+            droit = droit->suiv;
+        }
+        
+        gauche->suiv = proc;
+        gauche = proc;
+        gauche->suiv = droit;
+
+        if (droit == NULL) {
+            liste->queue = proc;
+        }
+
+        /*
         processus* courante = liste->tete;
         processus* ante_courante;
 
-        //Cas dans lequel le processus a reveiller est avant que la tete de la liste
-        if (courante->suiv == NULL && proc->reveiller < courante->reveiller) {
-
+        
+        if (proc->reveiller < courante->reveiller) {
             proc->suiv = courante;
             liste->tete = proc;
             return;
-
         }
 
 
@@ -107,12 +138,20 @@ void ajouter_par_priorite(processus* proc, list_processus* liste) {
             courante = courante->suiv;
         }
 
-        ante_courante->suiv = proc;
-        proc->suiv = courante;
+        if (ante_courante == NULL) {
+            printf("ERROR: Antecourante not init");
+        }
 
-        if (proc->suiv == NULL)
+        ante_courante->suiv = proc;
+
+        if (courante != NULL) {
+            proc->suiv = courante;
+        } else {
             liste->queue = proc;
+        }
+        */
     }
+
 }
 
 void print_liste(list_processus* liste) {
@@ -132,8 +171,10 @@ void print_liste(list_processus* liste) {
 }
 
 void print_status() {
-    printf("Activables:");print_liste(&activables);
-    printf("Endormis:");print_liste(&endormis);
+    printf("Activables:");
+    print_liste(&activables);
+    printf("Endormis:");
+    print_liste(&endormis);
 }
 
 processus* retirer_de_tete(list_processus* liste) {
@@ -196,22 +237,29 @@ char* mon_nom(void) {
 
 void ordonnance(void) {
 
-
     int t_actuel = nbr_secondes();
     processus* tmp;
     while (1) {
         if (endormis.tete != NULL && endormis.tete->reveiller == t_actuel) {
             tmp = retirer_de_tete(&endormis);
             tmp->etat = activable;
+            tmp->reveiller = -1;
             ajouter_en_queue(tmp, &activables);
             printf("ordonnanceur essais de ajouter %s a la queue\n", tmp->nom);
         } else break;
     }
 
-    processus * ancien = actif;
-    ancien->etat = activable;
-    ajouter_en_queue(ancien, &activables);
-    processus * nouveau = retirer_de_tete(&activables);
+    if (actif->etat == endormi){
+        ajouter_par_priorite(actif, &endormis);
+    }else if (actif->etat == elu){
+        actif->etat = activable;
+        ajouter_en_queue(actif, &activables);
+    }else{
+        printf("DAFUQ\n");
+    }
+
+    processus *ancien, *nouveau;
+    nouveau = retirer_de_tete(&activables);
     nouveau->etat = elu;
     actif = nouveau;
 
@@ -223,8 +271,6 @@ void dors(unsigned int nbr_secs) {
     processus* ancien = actif;
     ancien->reveiller = nbr_secs + nbr_secondes();
     ancien->etat = endormi;
-    ajouter_par_priorite(ancien, &endormis);
-    ordonnance();
 }
 
 void idle(void) {
