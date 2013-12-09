@@ -74,7 +74,7 @@ void efface_ecran() {
     //J'ai le fait de cette maniere pour mantenir le couleur de l'ecran,
     //c'est probablement un peu plus simple avec un des functions de gestion de memoire;
 
-    for (int y = 0; y < NUM_LIG; y++) {
+    for (int y = 1; y < NUM_LIG; y++) {
         for (int x = 0; x < NUM_COL; x++) {
             ecrit_car(y, x, ' ', OS_FNT_COLOR, OS_BCK_COLOR);
         }
@@ -153,7 +153,7 @@ void traite_car(unsigned char c) {
         if (ch == 12) {
             //Alors... LF
             efface_ecran();
-            place_curseur(0, 0);
+            place_curseur(1, 0);
 
         }
 

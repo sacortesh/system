@@ -30,7 +30,8 @@ sa pile d'exécution : qui est l'espace mémoire dans lequel sont stockés notam
 enum status {
     elu,
     activable,
-    endormi
+    endormi,
+    mourant
 };
 
 typedef struct processus {
@@ -60,6 +61,7 @@ typedef struct list_processus {
 processus* actif;
 list_processus activables;
 list_processus endormis;
+list_processus mourants;
 
 int processus_crees = 0;
 
@@ -184,10 +186,15 @@ void print_liste(list_processus* liste) {
 }
 
 void print_status() {
+    printf("\f");
+    printf("Actif:\n");
+    printf("{%i [%s] | Status = %i }\n", actif->pid, actif->nom, actif->etat);
     printf("Activables:\n");
     print_liste(&activables);
     printf("Endormis:\n");
     print_liste(&endormis);
+    printf("Mourants:\n");
+    print_liste(&mourants);
 }
 
 processus* retirer_de_tete(list_processus* liste) {
@@ -201,12 +208,28 @@ processus* retirer_de_tete(list_processus* liste) {
     }
 }
 
+/* Fonction pour nettoyer la structure des donnes des processus
+*/
+void destroy_processus(processus* proc){
+    strcpy(proc->nom, "");
+    proc->pid = -1;
+    proc->etat = -1;
+    proc->reveiller = -1;
+    proc->suiv = NULL;
+}
+
 int cree_processus(void (*code)(void), char *nom) {
     //initialitation
 
     int pid = processus_crees++;
 
-    processus * tmp = (processus *) malloc(sizeof (processus));
+    processus * tmp;
+    if (mourants.tete == NULL){
+        tmp = (processus *) malloc(sizeof (processus));
+    }else{
+        tmp = retirer_de_tete(&mourants);
+        destroy_processus(tmp);
+    }
 
     strcpy(tmp->nom, nom);
     tmp->etat = activable;
@@ -225,8 +248,13 @@ int cree_processus_idle(char *nom) {
     //initialitation
 
     int pid = processus_crees++;
-
-    processus * tmp = (processus *) malloc(sizeof (processus));
+    processus * tmp;
+    if (mourants.tete == NULL){
+        tmp = (processus *) malloc(sizeof (processus));
+    }else{
+        tmp = retirer_de_tete(&mourants);
+        destroy_processus(tmp);
+    }
 
     strcpy(tmp->nom, nom);
     tmp->etat = elu;
@@ -242,6 +270,16 @@ int cree_processus_idle(char *nom) {
 
 }
 
+/*Cette fonction sert a faire un recyclage des structures de processus qui ne seront plus utilisees
+*/
+void fin_processus(){
+    processus* ancien = actif;
+    ancien->reveiller = -1;
+    ancien->etat = mourant;
+    ordonnance();
+}
+
+
 int mon_pid(void) {
     return actif->pid;
 }
@@ -249,7 +287,7 @@ int mon_pid(void) {
 char* mon_nom(void) {
     return actif->nom;
 }
-
+//Debugging fonction; Je l'appelle quand un valeur, comme l'heure arrive a quelque valeur specifique
 void breaking_bad(void){
     print_status();
 }
@@ -260,10 +298,7 @@ void ordonnance(void) {
 
     int t_actuel = nbr_secondes();
 
-    if (t_actuel == 12){
-        breaking_bad();
-    }
-
+    //On reveille tous qui doivent se reveiller
     processus* tmp;
     while (1) {
         if (endormis.tete != NULL && endormis.tete->reveiller == t_actuel) {
@@ -275,8 +310,11 @@ void ordonnance(void) {
         } else break;
     }
 
+    //On gestione le prochain status du processus actif
     if (actif->etat == endormi){
-        ajouter_par_priorite(actif, &endormis);
+        ajouter_par_priorite(actif, &endormis);        
+    }else if(actif->etat == mourant){
+        ajouter_en_queue(actif, &mourants);
     }else if (actif->etat == elu){
         actif->etat = activable;
         ajouter_en_queue(actif, &activables);
@@ -312,7 +350,7 @@ void idle(void) {
         hlt();
      */
 
-    /*
+    /*Test 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100000000; i++);
@@ -320,7 +358,7 @@ void idle(void) {
         }
      */
 
-    /*
+    /*Test 4
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -366,10 +404,28 @@ void proc1(void) {
         }
      */
 
+        /*TEST 4: Generalisation a n processus
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
+    }
+    */
+    /*TEST 5: Dors de processus en desordre
     for (;;) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(10);
     }
+    */
+
+    //TEST 6: Fin des processus
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(2);
+    }
+    fin_processus();
 
 }
 
@@ -391,6 +447,7 @@ void proc2(void) {
         }
      */
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -400,10 +457,21 @@ void proc2(void) {
         }
      */
 
+        /*TEST 4: Generalisation a n processus
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
+    }
+    */
+    //TEST 5: Dors de processus en desordre
     for (;;) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(3);
     }
+    
 
 }
 
@@ -425,6 +493,7 @@ void proc3(void) {
         }
      */
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -434,11 +503,30 @@ void proc3(void) {
         }
      */
 
+        /*TEST 4: Generalisation a n processus
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
+    }
+    */
 
+    //TEST 5: Dors de processus en desordre
+    /*
     for (;;) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(5);
+    }*/
+
+    //Test 6
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(5);
     }
+    fin_processus();
+    
 }
 
 void proc4(void) {
@@ -452,12 +540,15 @@ void proc4(void) {
      */
 
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100000000; i++);
             ordonnance();
         }
      */
+
+    /*TEST 4: Generalisation a n processus
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -465,6 +556,7 @@ void proc4(void) {
         hlt();
         cli();
     }
+    */
 
 }
 
@@ -479,12 +571,14 @@ void proc5(void) {
      */
 
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100000000; i++);
             ordonnance();
         }
      */
+    /*TEST 4: Generalisation a n processus
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -492,6 +586,7 @@ void proc5(void) {
         hlt();
         cli();
     }
+    */
 
 }
 
@@ -506,12 +601,14 @@ void proc6(void) {
      */
 
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100000000; i++);
             ordonnance();
         }
      */
+    /*TEST 4: Generalisation a n processus
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -519,6 +616,7 @@ void proc6(void) {
         hlt();
         cli();
     }
+    */
 
 }
 
@@ -533,12 +631,14 @@ void proc7(void) {
      */
 
     /*
+    TEST 3
         for (;;) {
             printf("[%s] pid = %i\n", mon_nom(), mon_pid());
             for (int i = 0; i < 100000000; i++);
             ordonnance();
         }
      */
+    /*TEST 4: Generalisation a n processus
     for (;;) {
         printf("[%s] pid = %i\n", mon_nom(), mon_pid());
         for (int i = 0; i < 100 * 1000 * 1000; i++);
@@ -546,6 +646,7 @@ void proc7(void) {
         hlt();
         cli();
     }
+    */
 
 }
 
@@ -563,7 +664,9 @@ void init_processus() {
     cree_processus(proc1, "proc1");
     cree_processus(proc2, "proc2");
     cree_processus(proc3, "proc3");
-    /*
+
+
+    /* TEST Necessaires
         cree_processus(proc4, "proc4");
         cree_processus(proc5, "proc5");
         cree_processus(proc6, "proc6");
