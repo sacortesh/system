@@ -64,6 +64,7 @@ list_processus endormis;
 int processus_crees = 0;
 
 void ajouter_en_tete(processus* proc, list_processus* liste) {
+    proc->suiv = NULL;
     if (liste->tete == NULL) {
         liste->tete = proc;
         liste->queue = proc;
@@ -75,6 +76,7 @@ void ajouter_en_tete(processus* proc, list_processus* liste) {
 }
 
 void ajouter_en_queue(processus* proc, list_processus* liste) {
+    proc->suiv = NULL;
     if (liste->tete == NULL) {
         liste->tete = proc;
         liste->queue = proc;
@@ -85,12 +87,11 @@ void ajouter_en_queue(processus* proc, list_processus* liste) {
 }
 
 void ajouter_par_priorite(processus* proc, list_processus* liste) {
-    
+    proc->suiv = NULL;
         
     //Fait simplement pour reveiller un processus, avec le membre reveiller
     if (liste->tete == NULL) {
         liste->tete = proc;
-        liste->queue = proc;    
     } else {
 
         processus* gauche;
@@ -107,20 +108,27 @@ void ajouter_par_priorite(processus* proc, list_processus* liste) {
             return;
         }
 
+        //On trouve le place potentielle ou stocker le processus
+        while(droit->suiv != NULL){
+            if(priorite >= droit->reveiller){
+                gauche = droit;
+                droit = droit->suiv;
+            }else{
+                break;
+            }
+        }
 
-        while(droit != NULL && priorite > droit->reveiller){
-            gauche = droit;
-            droit = droit->suiv;
+        if(droit->suiv == NULL && priorite>=droit->reveiller){
+            droit->suiv = proc;
+            return;
         }
         
         gauche->suiv = proc;
         gauche = proc;
         gauche->suiv = droit;
+        return;
 
-        if (droit == NULL) {
-            liste->queue = proc;
-        }
-
+        
         /*
         processus* courante = liste->tete;
         processus* ante_courante;
@@ -161,19 +169,24 @@ void print_liste(list_processus* liste) {
     }
 
     processus* cour = liste->tete;
-    do {
+    while (1){
         printf("{%i [%s] | Rev = %u }-> ", cour->pid, cour->nom, cour->reveiller);
-        cour = cour->suiv;
-    } while (cour != NULL);
+        if(cour->suiv != NULL){
+            cour = cour->suiv;
+        }else {
+            break;
+        }
+        
+    }
 
     printf("NULL\n");
 
 }
 
 void print_status() {
-    printf("Activables:");
+    printf("Activables:\n");
     print_liste(&activables);
-    printf("Endormis:");
+    printf("Endormis:\n");
     print_liste(&endormis);
 }
 
@@ -201,7 +214,7 @@ int cree_processus(void (*code)(void), char *nom) {
 
     tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 2];
     tmp->stack[STCK_PROC - 2] = (unsigned long) code;
-
+    tmp->reveiller = -1;
     ajouter_en_queue(tmp, &activables);
 
     return pid;
@@ -218,6 +231,8 @@ int cree_processus_idle(char *nom) {
     strcpy(tmp->nom, nom);
     tmp->etat = elu;
     tmp->pid = pid;
+    tmp->reveiller = -1;
+
 
     //Initialiser le processus actif
     actif = tmp;
@@ -235,9 +250,20 @@ char* mon_nom(void) {
     return actif->nom;
 }
 
+void breaking_bad(void){
+    print_status();
+}
+
 void ordonnance(void) {
 
+    print_status();
+
     int t_actuel = nbr_secondes();
+
+    if (t_actuel == 12){
+        breaking_bad();
+    }
+
     processus* tmp;
     while (1) {
         if (endormis.tete != NULL && endormis.tete->reveiller == t_actuel) {
@@ -259,6 +285,7 @@ void ordonnance(void) {
     }
 
     processus *ancien, *nouveau;
+    ancien = actif;
     nouveau = retirer_de_tete(&activables);
     nouveau->etat = elu;
     actif = nouveau;
@@ -271,6 +298,7 @@ void dors(unsigned int nbr_secs) {
     processus* ancien = actif;
     ancien->reveiller = nbr_secs + nbr_secondes();
     ancien->etat = endormi;
+    ordonnance();
 }
 
 void idle(void) {
