@@ -63,7 +63,8 @@ list_processus activables;
 list_processus endormis;
 list_processus mourants;
 
-int processus_crees = 0;
+int pid_courante = 0;
+int procs_courantes = 0;
 
 void ajouter_en_tete(processus* proc, list_processus* liste) {
     proc->suiv = NULL;
@@ -218,36 +219,53 @@ void destroy_processus(processus* proc){
     proc->suiv = NULL;
 }
 
+/*Cette fonction sert a faire un recyclage des structures de processus qui ne seront plus utilisees
+*/
+void fin_processus(){
+    processus* ancien = actif;
+    ancien->reveiller = -1;
+    ancien->etat = mourant;
+    ordonnance();
+}
+
 int cree_processus(void (*code)(void), char *nom) {
     //initialitation
+    if (procs_courantes < NUMPROC){
+        procs_courantes++;
+        int pid = pid_courante++;
 
-    int pid = processus_crees++;
+        processus * tmp;
+        if (mourants.tete == NULL){
+            tmp = (processus *) malloc(sizeof (processus));
+        }else{
+            tmp = retirer_de_tete(&mourants);
+            destroy_processus(tmp);
+        }
 
-    processus * tmp;
-    if (mourants.tete == NULL){
-        tmp = (processus *) malloc(sizeof (processus));
+        strcpy(tmp->nom, nom);
+        tmp->etat = activable;
+        tmp->pid = pid;
+
+        tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 3];
+        tmp->stack[STCK_PROC - 3] = (unsigned long) code;
+        tmp->stack[STCK_PROC - 2] = (unsigned long) fin_processus;
+        tmp->reveiller = -1;
+        ajouter_en_queue(tmp, &activables);
+
+        return pid;
     }else{
-        tmp = retirer_de_tete(&mourants);
-        destroy_processus(tmp);
+        printf("Plus de processus impossible\n");
+        return -1;
     }
-
-    strcpy(tmp->nom, nom);
-    tmp->etat = activable;
-    tmp->pid = pid;
-
-    tmp->registres[1] = (unsigned long) &tmp->stack[STCK_PROC - 2];
-    tmp->stack[STCK_PROC - 2] = (unsigned long) code;
-    tmp->reveiller = -1;
-    ajouter_en_queue(tmp, &activables);
-
-    return pid;
 
 }
 
 int cree_processus_idle(char *nom) {
     //initialitation
 
-    int pid = processus_crees++;
+    int pid = pid_courante++;
+    procs_courantes++;
+
     processus * tmp;
     if (mourants.tete == NULL){
         tmp = (processus *) malloc(sizeof (processus));
@@ -270,15 +288,6 @@ int cree_processus_idle(char *nom) {
 
 }
 
-/*Cette fonction sert a faire un recyclage des structures de processus qui ne seront plus utilisees
-*/
-void fin_processus(){
-    processus* ancien = actif;
-    ancien->reveiller = -1;
-    ancien->etat = mourant;
-    ordonnance();
-}
-
 
 int mon_pid(void) {
     return actif->pid;
@@ -289,7 +298,7 @@ char* mon_nom(void) {
 }
 //Debugging fonction; Je l'appelle quand un valeur, comme l'heure arrive a quelque valeur specifique
 void breaking_bad(void){
-    print_status();
+    //print_status();
 }
 
 void ordonnance(void) {
@@ -297,6 +306,9 @@ void ordonnance(void) {
     print_status();
 
     int t_actuel = nbr_secondes();
+    
+
+    if  (t_actuel == 4) breaking_bad();
 
     //On reveille tous qui doivent se reveiller
     processus* tmp;
@@ -328,6 +340,7 @@ void ordonnance(void) {
     nouveau->etat = elu;
     actif = nouveau;
 
+    print_status();
     ctx_sw(ancien->registres, nouveau->registres);
 
 }
@@ -421,12 +434,18 @@ void proc1(void) {
     */
 
     //TEST 6: Fin des processus
+    /*
     for (int i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(2);
     }
     fin_processus();
+*/
 
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(2);
+    }
 }
 
 void proc2(void) {
@@ -521,11 +540,18 @@ void proc3(void) {
     }*/
 
     //Test 6
+        /*
     for (int i = 0; i < 2; i++) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(5);
     }
     fin_processus();
+    */
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(5);
+    }
+    
     
 }
 

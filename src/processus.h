@@ -15,18 +15,13 @@
 #define REQ_REG 5
 #define STCK_PROC 512
 #define QUANPROC 2
-
-
+#define NUMPROC 20
 
 extern void ctx_sw(void * courante_proc, void * nouveau_proc);
 void idle(void);
 void init_processus();
 void ordonnance(void);
 void print_status();
-
-
-
-
 
 
 #endif	/* PROCESSUS_H */
