@@ -222,6 +222,7 @@ void destroy_processus(processus* proc){
 /*Cette fonction sert a faire un recyclage des structures de processus qui ne seront plus utilisees
 */
 void fin_processus(){
+    procs_courantes--;
     processus* ancien = actif;
     ancien->reveiller = -1;
     ancien->etat = mourant;
@@ -389,111 +390,6 @@ void idle(void) {
 
 }
 
-void proc1(void) {
-    /*TEST1 et 2
-        for (;;) {
-            printf("[proc1] idle m'a donne la main\n");
-            printf("[proc1] je tente de lui la redonner...\n");
-            ctx_sw(&t_processus[1]->registres, &t_processus[0]->registres);
-        }
-        hlt();
-     */
-
-    /*
-        for (;;) {
-            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-            for (int i = 0; i < 100000000; i++);
-            ordonnance();
-        }
-     */
-    /*
-        TEST 3
-        for (;;) {
-            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-            for (int i = 0; i < 100 * 1000 * 1000; i++);
-            sti();
-            hlt();
-            cli();
-        }
-     */
-
-        /*TEST 4: Generalisation a n processus
-    for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
-        sti();
-        hlt();
-        cli();
-    }
-    */
-    /*TEST 5: Dors de processus en desordre
-    for (;;) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
-        dors(10);
-    }
-    */
-
-    //TEST 6: Fin des processus
-    /*
-    for (int i = 0; i < 2; i++) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
-        dors(2);
-    }
-    fin_processus();
-*/
-
-    for (int i = 0; i < 2; i++) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
-        dors(2);
-    }
-}
-
-void proc2(void) {
-    /*TEST1 et 2
-        for (;;) {
-            printf("[proc1] idle m'a donne la main\n");
-            printf("[proc1] je tente de lui la redonner...\n");
-            ctx_sw(&t_processus[1]->registres, &t_processus[0]->registres);
-        }
-        hlt();
-     */
-
-    /*
-        for (;;) {
-            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-            for (int i = 0; i < 100000000; i++);
-            ordonnance();
-        }
-     */
-    /*
-    TEST 3
-        for (;;) {
-            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-            for (int i = 0; i < 100 * 1000 * 1000; i++);
-            sti();
-            hlt();
-            cli();
-        }
-     */
-
-        /*TEST 4: Generalisation a n processus
-    for (;;) {
-        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
-        for (int i = 0; i < 100 * 1000 * 1000; i++);
-        sti();
-        hlt();
-        cli();
-    }
-    */
-    //TEST 5: Dors de processus en desordre
-    for (;;) {
-        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
-        dors(3);
-    }
-    
-
-}
-
 void proc3(void) {
     /*TEST1 et 2
         for (;;) {
@@ -551,8 +447,121 @@ void proc3(void) {
         printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
         dors(5);
     }
+
+    cree_processus(proc3, "proc3");
+   
     
-    
+}
+
+void proc1(void) {
+    /*TEST1 et 2
+        for (;;) {
+            printf("[proc1] idle m'a donne la main\n");
+            printf("[proc1] je tente de lui la redonner...\n");
+            ctx_sw(&t_processus[1]->registres, &t_processus[0]->registres);
+        }
+        hlt();
+     */
+
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
+    /*
+        TEST 3
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
+
+        /*TEST 4: Generalisation a n processus
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
+    }
+    */
+    /*TEST 5: Dors de processus en desordre
+    for (;;) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(10);
+    }
+    */
+
+    //TEST 6: Fin des processus
+    /*
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(2);
+    }
+    fin_processus();
+*/
+
+    for (int i = 0; i < 2; i++) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(2);
+    }
+
+    cree_processus(proc3, "proc3");
+
+}
+
+
+
+void proc2(void) {
+    /*TEST1 et 2
+        for (;;) {
+            printf("[proc1] idle m'a donne la main\n");
+            printf("[proc1] je tente de lui la redonner...\n");
+            ctx_sw(&t_processus[1]->registres, &t_processus[0]->registres);
+        }
+        hlt();
+     */
+
+    /*
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100000000; i++);
+            ordonnance();
+        }
+     */
+    /*
+    TEST 3
+        for (;;) {
+            printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+            for (int i = 0; i < 100 * 1000 * 1000; i++);
+            sti();
+            hlt();
+            cli();
+        }
+     */
+
+        /*TEST 4: Generalisation a n processus
+    for (;;) {
+        printf("[%s] pid = %i\n", mon_nom(), mon_pid());
+        for (int i = 0; i < 100 * 1000 * 1000; i++);
+        sti();
+        hlt();
+        cli();
+    }
+    */
+    //TEST 5: Dors de processus en desordre
+    for (;;) {
+        printf("[temps = %u] processus %s pid = %i\n", nbr_secondes(), mon_nom(), mon_pid());
+        dors(3);
+    }
+
+   
+
 }
 
 void proc4(void) {
